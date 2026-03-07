@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>サービス利用申込 | NJF REGI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+    <style>
+        .must { background: #e3342f; color: white; padding: 2px 5px; font-size: 10px; border-radius: 2px; margin-left: 5px; vertical-align: middle; }
+        canvas { border: 1px solid #ddd; background: #fff; width: 100%; height: 180px; touch-action: none; border-radius: 8px; }
+        .terms-box::-webkit-scrollbar { width: 4px; }
+        .terms-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-adr">
+    <span class="p-country-name" style="display:none;">Japan</span>
+
+    <div class="max-w-xl mx-auto min-h-screen bg-white shadow-xl flex flex-col">
+        <div class="bg-[#1a365d] p-6 text-white text-center">
+            <h1 class="text-xl font-bold">NJF REGI サービス利用申込</h1>
+            <p class="text-[10px] mt-1 opacity-70">新日本富士アシスト株式会社</p>
+        </div>
+
+        <form id="applyForm" class="p-5 space-y-8 flex-1">
+            <section>
+                <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">1. 重要事項・個人情報の確認 <span class="must">必須</span></h2>
+                <div id="terms-box" class="terms-box bg-slate-50 border p-3 text-[11px] leading-relaxed h-48 overflow-y-scroll mb-3 rounded shadow-inner text-slate-600">
+                    <p class="font-bold text-slate-900 mb-2">【契約重要事項説明】</p>
+                    <p>・本サービスの契約期間は2年間です。満了後は2年毎の自動更新となります [cite: 5]。</p>
+                    <p>・最低利用期間（24ヶ月）経過前に中途解約する場合は、残余期間分の料金が発生します [cite: 5, 6]。</p>
+                    <p>・データ保存期間は最大24ヶ月です。25ヶ月目以降は消去されるため、バックアップは自己責任となります [cite: 9]。</p>
+                    <p>・解約の際は1ヶ月前までに書面による申請が必要です [cite: 22]。</p>
+                    <p class="font-bold text-slate-900 mt-4 mb-2">【個人情報・業務データの取扱い】</p>
+                    <p>・取得した個人情報はレジ業務、分析、問い合わせ対応にのみ利用します [cite: 34, 36, 37, 38]。</p>
+                    <p>・業務データは利用店舗に帰属しますが、バックアップは利用店舗の責任とします [cite: 46, 53]。</p>
+                    <p class="text-center mt-4 opacity-50">--- ここまで ---</p>
+                </div>
+                <label class="flex items-start text-sm font-bold bg-slate-100 p-4 rounded-lg cursor-pointer transition-all border-2 border-transparent" id="check-label">
+                    <input type="checkbox" name="terms" id="terms-checkbox" required disabled class="w-6 h-6 mr-3 mt-0.5">
+                    <span id="check-text" class="text-slate-400">最下部までスクロールして同意する</span>
+                </label>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">2. お客様情報</h2>
+                <div>
+                    <label class="text-sm font-bold block">店舗名 / 商号 <span class="must">必須</span></label>
+                    <input type="text" name="storeName" required class="w-full border-b-2 p-2 outline-none focus:border-blue-900" placeholder="例：銀河苑">
+                </div>
+                <div class="bg-blue-50/50 p-4 rounded-xl space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-bold w-12 text-blue-900">〒</span>
+                        <input type="text" name="zip" required class="p-postal-code w-full border rounded p-2 text-sm" placeholder="5201121">
+                    </div>
+                    <input type="text" name="address" required class="p-region p-locality p-street-address w-full border-b p-2 text-sm outline-none" placeholder="自動入力される住所">
+                    <input type="text" name="address2" class="w-full border-b p-2 text-sm outline-none" placeholder="番地・建物名">
+                </div>
+                <div>
+                    <label class="text-sm font-bold block">電話番号 <span class="must">必须</span></label>
+                    <input type="tel" name="phone" required class="w-full border-b-2 p-2 outline-none" placeholder="0740-37-6088">
+                </div>
+            </section>
+
+            <section>
+                <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">3. 設置機器の数量</h2>
+                <div id="product-list" class="space-y-2 mb-4">
+                    <p class="text-xs text-slate-400">価格情報を取得中...</p>
+                </div>
+                <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg">
+                    <p class="text-[10px] opacity-60">初期費用 総合計 (10%税込)</p>
+                    <p id="total-display" class="text-3xl font-bold">￥0</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">4. ご署名 <span class="must">必須</span></h2>
+                <canvas id="sig-canvas"></canvas>
+                <div class="flex justify-end mt-2">
+                    <button type="button" id="sig-clearBtn" class="text-xs bg-slate-200 px-4 py-2 rounded-full font-bold text-slate-600">書き直す</button>
+                </div>
+            </section>
+
+            <button type="submit" id="submitBtn" class="w-full bg-[#1a365d] text-white py-5 rounded-full font-bold text-lg shadow-xl active:scale-95 transition-transform disabled:bg-slate-300">
+                同意して送信する
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwkb_kVneZr1Xiw242M0u-0TNYSbO7HJoz_ndZsXO8GuNoASsTzwHHmQ1Cov4wQeCiSTQ/exec";
+        let productData = [];
+
+        // 1. 初始化读取价格
+        window.onload = async () => {
+            try {
+                const res = await fetch(GAS_URL);
+                productData = await res.json();
+                const list = document.getElementById('product-list');
+                list.innerHTML = productData.map((p, i) => `
+                    <div class="flex justify-between items-center py-3 border-b">
+                        <span class="text-sm font-medium">${p.name} <span class="text-[10px] text-slate-400">(￥${p.price.toLocaleString()})</span></span>
+                        <input type="number" value="${i===0?1:0}" min="0" onchange="calc()" class="qty-input w-16 border rounded-lg p-2 text-center font-bold text-blue-900" data-index="${i}">
+                    </div>
+                `).join('');
+                calc();
+            } catch(e) { console.error("Price load error"); }
+        };
+
+        // 2. 计算总价
+        function calc() {
+            let total = 0;
+            document.querySelectorAll('.qty-input').forEach(input => {
+                const p = productData[input.dataset.index];
+                total += input.value * p.price * 1.1;
+            });
+            document.getElementById('total-display').innerText = "￥" + Math.floor(total).toLocaleString();
+        }
+
+        // 3. 滚动阅读逻辑
+        const termsBox = document.getElementById('terms-box');
+        const checkbox = document.getElementById('terms-checkbox');
+        termsBox.onscroll = () => {
+            if (termsBox.scrollHeight - termsBox.scrollTop <= termsBox.clientHeight + 10) {
+                checkbox.disabled = false;
+                document.getElementById('check-text').innerText = "全ての内容に同意します";
+                document.getElementById('check-text').className = "text-blue-900";
+                document.getElementById('check-label').className = "flex items-start text-sm font-bold bg-blue-50 p-4 rounded-lg cursor-pointer border-2 border-blue-900";
+            }
+        };
+
+        // 4. 签名逻辑
+        const canvas = document.getElementById('sig-canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        const getPos = (e) => {
+            const r = canvas.getBoundingClientRect();
+            return { x: (e.clientX || e.touches[0].clientX) - r.left, y: (e.clientY || e.touches[0].clientY) - r.top };
+        };
+        const start = (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.lineWidth=3; ctx.moveTo(p.x, p.y); e.preventDefault(); };
+        const move = (e) => { if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); };
+        canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', () => drawing=false);
+        canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', move); canvas.addEventListener('touchend', () => drawing=false);
+        document.getElementById('sig-clearBtn').onclick = () => ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        // 5. 提交表单
+        document.getElementById('applyForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; btn.innerText = "送信中...";
+
+            const items = [];
+            document.querySelectorAll('.qty-input').forEach(input => {
+                if(input.value > 0) {
+                    items.push({ name: productData[input.dataset.index].name, qty: input.value, price: productData[input.dataset.index].price });
+                }
+            });
+
+            const payload = {
+                storeName: e.target.storeName.value,
+                address: e.target.zip.value + " " + e.target.address.value + (e.target.address2.value || ""),
+                phone: e.target.phone.value,
+                totalPrice: document.getElementById('total-display').innerText.replace(/[￥,]/g, ''),
+                items: items,
+                signature: canvas.toDataURL()
+            };
+
+            await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+            alert("お申し込みが完了しました。メールをご確認ください。");
+            window.location.reload();
+        };
+    </script>
+</body>
+</html>
