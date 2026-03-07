@@ -46,7 +46,7 @@
                 <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">2. お客様情報</h2>
                 <div>
                     <label class="text-sm font-bold block">店舗名 / 商号 <span class="must">必須</span></label>
-                    <input type="text" name="storeName" required class="w-full border-b-2 p-2 outline-none focus:border-blue-900" placeholder="例：銀河苑">
+                    <input type="text" name="storeName" required class="w-full border-b-2 p-2 outline-none focus:border-blue-900" placeholder="例：NJF酒場">
                 </div>
                 <div class="bg-blue-50/50 p-4 rounded-xl space-y-4">
                     <div class="flex items-center space-x-2">
@@ -62,16 +62,49 @@
                 </div>
             </section>
 
-            <section>
-                <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">3. 設置機器の数量</h2>
-                <div id="product-list" class="space-y-2 mb-4">
-                    <p class="text-xs text-slate-400">価格情報を取得中...</p>
+            <section class="space-y-4">
+    <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">3. 設置機器・利用プラン</h2>
+    
+    <div id="product-list" class="space-y-2 mb-4">
+        <p class="text-xs text-slate-400">価格情報を取得中...</p>
+    </div>
+
+    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-4">
+        <label class="text-sm font-bold block mb-3 text-blue-900">基本利用料 (必須選択)</label>
+        <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center justify-center p-3 bg-white border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-900 has-[:checked]:bg-blue-900 has-[:checked]:text-white">
+                <input type="radio" name="basePlan" value="monthly" checked class="hidden" onchange="calc()">
+                <div class="text-center">
+                    <div class="text-[10px]">月額プラン</div>
+                    <div class="font-bold">￥8,000/月</div>
                 </div>
-                <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg">
-                    <p class="text-[10px] opacity-60">初期費用 総合計 (10%税込)</p>
-                    <p id="total-display" class="text-3xl font-bold">￥0</p>
+            </label>
+            <label class="flex items-center justify-center p-3 bg-white border-2 rounded-lg cursor-pointer transition-all has-[:checked]:border-blue-900 has-[:checked]:bg-blue-900 has-[:checked]:text-white">
+                <input type="radio" name="basePlan" value="yearly" class="hidden" onchange="calc()">
+                <div class="text-center">
+                    <div class="text-[10px]">年額プラン</div>
+                    <div class="font-bold">￥80,000/年</div>
                 </div>
-            </section>
+            </label>
+        </div>
+    </div>
+
+    <label class="flex items-center justify-between p-4 bg-slate-50 border rounded-xl cursor-pointer hover:bg-white transition-colors">
+        <div class="flex items-center">
+            <input type="checkbox" id="qrOption" class="w-5 h-5 mr-3 accent-blue-900" onchange="calc()">
+            <div>
+                <span class="font-bold text-sm">QR注文サービス</span>
+                <p id="qrPriceHint" class="text-[10px] text-slate-500">月額 +￥4,000 (基本に準ずる)</p>
+            </div>
+        </div>
+        <div id="qrActivePrice" class="font-bold text-blue-900 text-sm">￥0</div>
+    </label>
+
+    <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg mt-4">
+        <p class="text-[10px] opacity-60">合計金額 (10%税込)</p>
+        <p id="total-display" class="text-3xl font-bold">￥0</p>
+    </div>
+</section>
 
             <section>
                 <h2 class="font-bold border-l-4 border-blue-900 pl-2 mb-3 text-lg">4. ご署名 <span class="must">必須</span></h2>
@@ -172,4 +205,5 @@
     </script>
 </body>
 </html>
+
 
