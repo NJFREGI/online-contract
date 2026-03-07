@@ -5,79 +5,82 @@
     <title>サービス利用申込 | NJF REGI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .must { background: #e3342f; color: white; padding: 2px 5px; font-size: 10px; border-radius: 2px; margin-left: 5px; vertical-align: middle; }
+        .must { background: #e3342f; color: white; padding: 2px 5px; font-size: 10px; border-radius: 2px; margin-left: 5px; }
+        .terms-box { height: 150px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; font-size: 12px; background: #f9f9f9; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 p-4">
-    <div class="max-w-xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
+<body class="bg-slate-50 p-4">
+    <div class="max-w-xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
         <div class="bg-blue-900 p-6 text-white text-center">
             <h1 class="text-xl font-bold">NJF REGI サービス利用申込</h1>
+            <p class="text-xs opacity-70 mt-1">新日本富士アシスト株式会社</p>
         </div>
 
-        <form id="contractForm" class="p-6 space-y-8">
-            <section class="space-y-4">
-                <h2 class="font-bold border-l-4 border-blue-900 pl-2 text-lg">2. お客様情報</h2>
-                
-                <div>
-                    <label class="block text-sm font-bold mb-1">店舗名 / 商号 <span class="must">必須</span></label>
-                    <input type="text" id="shopName" required class="w-full border rounded p-2" placeholder="例：銀河苑">
+        <form id="contractForm" class="p-6 space-y-6">
+            <section class="space-y-3">
+                <h2 class="font-bold border-l-4 border-blue-900 pl-2">1. 重要事項の確認 <span class="must">必須</span></h2>
+                <div class="terms-box rounded">
+                    <p class="font-bold underline mb-2">【契約重要事項説明】</p>
+                    <p>・本サービスの契約期間は1年間です。満了後は1年毎の自動更新となります。</p>
+                    <p>・最低利用期間（24ヶ月）経過前に中途解約する場合は、残余期間分の料金が発生します。</p>
+                    <p>・データ保存期間は最大24ヶ月です。バックアップは利用店舗の責任とします。</p>
+                    <p>・解約の際は1ヶ月前までに書面による申請が必要です。</p>
                 </div>
-
-                <div class="flex items-center justify-between mt-4 border-t pt-4">
-                    <label class="block text-sm font-bold">契約会社情報</label>
-                    <button type="button" onclick="copyShopInfo()" class="text-[10px] bg-slate-200 hover:bg-slate-300 px-2 py-1 rounded">店舗名と同じ</button>
-                </div>
-                <input type="text" id="companyName" required class="w-full border rounded p-2" placeholder="契约会社名">
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold mb-1">代表者名 <span class="must">必須</span></label>
-                        <input type="text" id="representative" required class="w-full border rounded p-2">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1">電話番号 <span class="must">必須</span></label>
-                        <input type="tel" id="phone" required class="w-full border rounded p-2">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-1">メールアドレス <span class="must">必須</span></label>
-                    <input type="email" id="email" required class="w-full border rounded p-2">
-                </div>
+                <label class="flex items-center text-sm cursor-pointer">
+                    <input type="checkbox" required class="w-4 h-4 mr-2"> 規約及び重要事項に同意する
+                </label>
             </section>
 
             <section class="space-y-4">
-                <h2 class="font-bold border-l-4 border-blue-900 pl-2 text-lg">3. 設置機器・利用プラン</h2>
+                <h2 class="font-bold border-l-4 border-blue-900 pl-2">2. 契約者情報</h2>
+                <div>
+                    <label class="block text-sm font-bold mb-1">契約会社名 / 商号 <span class="must">必須</span></label>
+                    <input type="text" id="companyName" required class="w-full border rounded p-2" placeholder="例：株式会社NJF">
+                </div>
+                
+                <div class="pt-2 border-t">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-sm font-bold">設置先店舗名</label>
+                        <button type="button" onclick="copyFromCompany()" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300">契約会社名と同じ</button>
+                    </div>
+                    <input type="text" id="shopName" required class="w-full border rounded p-2" placeholder="例：銀河苑">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-bold mb-1">代表者名 <span class="must">必须</span></label><input type="text" id="representative" required class="w-full border rounded p-2"></div>
+                    <div><label class="block text-sm font-bold mb-1">電話番号 <span class="must">必须</span></label><input type="tel" id="phone" required class="w-full border rounded p-2"></div>
+                </div>
+                <div><label class="block text-sm font-bold mb-1">メールアドレス <span class="must">必须</span></label><input type="email" id="email" required class="w-full border rounded p-2"></div>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="font-bold border-l-4 border-blue-900 pl-2">3. 設置機器・プラン</h2>
                 <div id="product-list" class="space-y-2"></div>
 
                 <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    <label class="text-sm font-bold block mb-2 text-blue-900">基本利用料 (必須)</label>
+                    <label class="text-xs font-bold text-blue-900 mb-2 block">基本利用料 (必須選択)</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <label class="flex flex-col items-center p-3 bg-white border-2 rounded-lg cursor-pointer has-[:checked]:border-blue-900">
+                        <label class="flex flex-col items-center p-2 bg-white border-2 rounded-lg cursor-pointer has-[:checked]:border-blue-900">
                             <input type="radio" name="basePlan" value="monthly" checked class="hidden" onchange="calc()">
-                            <span class="text-[10px]">月額プラン</span>
-                            <span class="font-bold">￥8,000/月</span>
+                            <span class="text-[10px]">月額プラン</span><span class="font-bold text-sm">￥8,000</span>
                         </label>
-                        <label class="flex flex-col items-center p-3 bg-white border-2 rounded-lg cursor-pointer has-[:checked]:border-blue-900">
+                        <label class="flex flex-col items-center p-2 bg-white border-2 rounded-lg cursor-pointer has-[:checked]:border-blue-900">
                             <input type="radio" name="basePlan" value="yearly" class="hidden" onchange="calc()">
-                            <span class="text-[10px]">年額プラン</span>
-                            <span class="font-bold">￥80,000/年</span>
+                            <span class="text-[10px]">年額プラン</span><span class="font-bold text-sm">￥80,000</span>
                         </label>
                     </div>
                 </div>
 
-                <label class="flex items-center justify-between p-4 bg-slate-50 border rounded-xl cursor-pointer">
+                <label class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl cursor-pointer">
                     <div class="flex items-center">
                         <input type="checkbox" id="qrOption" class="w-5 h-5 mr-3 accent-blue-900" onchange="calc()">
-                        <div>
-                            <span class="font-bold text-sm">QR注文サービス</span>
-                            <p id="qrPriceHint" class="text-[10px] text-slate-500">月額 +￥4,000</p>
-                        </div>
+                        <div><span class="font-bold text-sm">QR注文サービス</span><p id="qrPriceHint" class="text-[10px] text-slate-500">月額 +￥4,000</p></div>
                     </div>
                     <div id="qrActivePrice" class="font-bold text-blue-900">￥0</div>
                 </label>
 
-                <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-lg">
-                    <p class="text-[10px] opacity-60">初期費用 合計 (10%税込)</p>
+                <div class="bg-slate-900 text-white p-5 rounded-2xl text-center">
+                    <p class="text-[10px] opacity-60">合計金額 (10%税込)</p>
                     <p id="total-display" class="text-3xl font-bold">￥0</p>
                 </div>
             </section>
@@ -88,26 +91,25 @@
 
     <script>
         let productData = [];
-        const API_URL = "https://script.google.com/macros/s/AKfycbx9hxuNmRr7bktfr-56VMK1FE1b1xSeGbnmeezVeS5xhi3o6LcRvmE1xGajI0iwZ2W83w/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbx9hxuNmRr7bktfr-56VMK1FE1b1xSeGbnmeezVeS5xhi3o6LcRvmE1xGajI0iwZ2W83w/exec"; // 请填入真实的URL
 
-        // 获取数据并渲染
         fetch(API_URL).then(res => res.json()).then(data => {
             productData = data;
             const list = document.getElementById('product-list');
             data.forEach((p, i) => {
-                // 解决重复：不显示利用料和QR项
+                // 解决重复：排除名称带“利用料”或“QR”的项目
                 if(p.name.includes("利用料") || p.name.includes("QR")) return;
                 list.innerHTML += `
                     <div class="flex items-center justify-between p-3 bg-white border rounded-lg">
-                        <span class="text-sm font-bold">${p.name} <small class="text-slate-400 font-normal">(￥${p.price.toLocaleString()})</small></span>
-                        <input type="number" value="0" min="0" data-index="${i}" class="qty-input w-16 border rounded p-1 text-center" onchange="calc()">
+                        <span class="text-xs font-bold">${p.name} <small class="text-slate-400 font-normal">(￥${p.price.toLocaleString()})</small></span>
+                        <input type="number" value="0" min="0" data-index="${i}" class="qty-input w-12 border rounded p-1 text-center" onchange="calc()">
                     </div>`;
             });
             calc();
         });
 
-        function copyShopInfo() {
-            document.getElementById('companyName').value = document.getElementById('shopName').value;
+        function copyFromCompany() {
+            document.getElementById('shopName').value = document.getElementById('companyName').value;
         }
 
         function calc() {
@@ -115,17 +117,15 @@
             const isYearly = document.querySelector('input[name="basePlan"]:checked').value === 'yearly';
             const qrEnabled = document.getElementById('qrOption').checked;
 
-            // 1. 硬件计算
             document.querySelectorAll('.qty-input').forEach(input => {
                 total += input.value * productData[input.dataset.index].price * 1.1;
             });
 
-            // 2. 基本利用料 & QR联动
             const basePrice = isYearly ? 80000 : 8000;
             const qrPrice = isYearly ? 40000 : 4000;
-            
             total += basePrice * 1.1;
-            document.getElementById('qrPriceHint').innerText = (isYearly ? "年額 +￥40,000" : "月額 +￥4,000") + " (基本に準ずる)";
+
+            document.getElementById('qrPriceHint').innerText = (isYearly ? "年額 +￥40,000" : "月額 +￥4,000");
             
             if(qrEnabled) {
                 total += qrPrice * 1.1;
@@ -133,9 +133,14 @@
             } else {
                 document.getElementById('qrActivePrice').innerText = "￥0";
             }
-
             document.getElementById('total-display').innerText = "￥" + Math.floor(total).toLocaleString();
         }
+
+        document.getElementById('contractForm').onsubmit = async (e) => {
+            e.preventDefault();
+            // 这里加入你的 fetch(API_URL, {method:'POST'...}) 提交逻辑
+            alert("送信中...");
+        };
     </script>
 </body>
 </html>
