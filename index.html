@@ -136,7 +136,7 @@
 
     <script>
         // ======= 关键：填写您的 GAS WebApp 链接 =======
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwIP-XgdD0fqd4Zhe3tsN7iAWXoIuiEs_7jVBEH6ZXGmESG_4qxNde8k0hrgwAKscz56w/exec"; 
+        const GAS_URL = "您的GAS部署后的链接地址"; 
         // ===========================================
 
         let hardwareData = [];
@@ -226,11 +226,82 @@
         canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
         canvas.addEventListener('touchend', () => drawing = false);
 
-        document.getElementById('contractForm').onsubmit = (e) => {
-            e.preventDefault();
-            if(canvas.toDataURL() === canvas.cloneNode().toDataURL()) { alert("代表者署名をお願いします。"); return; }
-            alert("お申込を送信しています...");
-        };
+       document.getElementById('contractForm').onsubmit = async (e) => {
+    e.preventDefault();
+    
+    // 1. 检查签名是否为空
+    const isBlank = canvas.toDataURL() === canvas.cloneNode().toDataURL();
+    if(isBlank) { alert("代表者署名をお願いします。"); return; }
+
+    // 2. 整理选购明细数据
+    const isYearly = document.querySelector('input[name="basePlan"]:checked').value === 'yearly';
+    const items = [];
+    
+    // 基础费明细
+    items.push({
+        name: isYearly ? "基本利用料(年額)" : "基本利用料(月額)",
+        count: 1,
+        subtotal: isYearly ? 80000 : 8000
+    });
+    
+    // 扫码费明细
+    if(document.getElementById('scanOption').checked) {
+        items.push({
+            name: isYearly ? "QR注文(年額)" : "QR注文(月額)",
+            count: 1,
+            subtotal: isYearly ? 40000 : 4000
+        });
+    }
+
+    // 硬件设备明细
+    hardwareData.forEach((h, i) => {
+        const qty = document.getElementById(`hw-${i}`).value;
+        if(qty > 0) {
+            items.push({ name: h.name, count: qty, subtotal: qty * h.price });
+        }
+    });
+
+    // 3. 构建提交给后台的完整数据包
+    const payload = {
+        companyName: document.getElementById('companyName').value,
+        companyTel: document.getElementById('companyTel').value,
+        companyZip: document.querySelector('.p-postal-code').value,
+        companyAddr1: document.getElementById('companyAddr1').value,
+        companyAddr2: document.getElementById('companyAddr2').value,
+        representative: document.getElementById('representative').value,
+        shopName: document.getElementById('shopName').value,
+        shopTel: document.getElementById('shopTel').value,
+        shopAddr1: document.getElementById('shopAddr1').value,
+        shopAddr2: document.getElementById('shopAddr2').value,
+        shopManager: document.getElementById('shopManager').value,
+        email: document.getElementById('email').value,
+        items: items,
+        total: document.getElementById('total-display').innerText,
+        signature: canvas.toDataURL()
+    };
+
+    // 4. 执行异步提交
+    try {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = "送信中...";
+
+        const resp = await fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors', // 解决跨域限制
+            body: JSON.stringify(payload)
+        });
+
+        // 由于 no-cors 无法直接读取返回内容，我们通常假设成功
+        alert("お申込ありがとうございました。内容を確認し、担当者よりご連絡いたします。");
+        location.reload(); 
+
+    } catch (err) {
+        alert("送信エラーが発生しました。インターネット接続を確認してください。");
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').innerText = "お申込を確定する";
+    }
+};
     </script>
 </body>
 </html>
