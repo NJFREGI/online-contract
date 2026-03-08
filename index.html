@@ -137,7 +137,7 @@
 
     <script>
         // ======= 关键：填写您的 GAS WebApp 链接 =======
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxBnfwgFOmdq34deqI9juyShkI9vFHxvAS3gnNDTB7ghqtUQpyu9qxGoYa2omRiJNI3bg/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbz79yWUW8pUxIdrtIdt6BiVXGXxSeZPwIqlAJlxd1ztBk9RchCIQ4Df_nBjbbwg_ixzPA/exec"; 
         // ===========================================
 
         let hardwareData = [];
@@ -252,30 +252,37 @@
     // 2. 整理选购明细数据
     const isYearly = document.querySelector('input[name="basePlan"]:checked').value === 'yearly';
     const items = [];
-    
-    // 基础费明细
-    items.push({
-        name: isYearly ? "基本利用料(年額)" : "基本利用料(月額)",
-        count: 1,
-        subtotal: isYearly ? 80000 : 8000
-    });
-    
-    // 扫码费明细
-    if(document.getElementById('scanOption').checked) {
-        items.push({
-            name: isYearly ? "QR注文(年額)" : "QR注文(月額)",
-            count: 1,
-            subtotal: isYearly ? 40000 : 4000
-        });
-    }
+const isYearly = document.getElementById('planYearly').checked; // 假设您的年付 ID 是这个
 
-    // 硬件设备明细
-    hardwareData.forEach((h, i) => {
-        const qty = document.getElementById(`hw-${i}`).value;
-        if(qty > 0) {
-            items.push({ name: h.name, count: qty, subtotal: qty * h.price });
-        }
-    });
+// 基础费用
+items.push({
+  name: isYearly ? "基本利用料(年額)" : "基本利用料(月額)",
+  count: 1,
+  subtotal: isYearly ? 80000 : 8000
+});
+
+// 扫码费 (参考 image_916ad3)
+if(document.getElementById('scanOption').checked) {
+  items.push({
+    name: isYearly ? "QR注文(年額)" : "QR注文(月額)",
+    count: 1,
+    subtotal: isYearly ? 40000 : 4000
+  });
+}
+
+// 2. 构建完整 payload (参考 image_9b8889)
+const payload = {
+  companyName: document.getElementById('companyName').value,
+  companyZip: document.getElementById('companyZip').value,
+  // 【关键修复】删掉括号里引号后的空格，确保 ID 匹配
+  companyAddr1: document.getElementById('companyAddr1').value, 
+  shopZip: document.getElementById('shopZip').value, // 确保 ID 是 shopZip
+  shopAddr1: document.getElementById('shopAddr1').value,
+  email: document.getElementById('email').value,
+  items: items, // 将上面生成的 items 数组放进来
+  total: document.getElementById('total-display').innerText,
+  signature: canvas.toDataURL()
+};
 
     // 3. 构建提交给后台的完整数据包
     const payload = {
@@ -324,6 +331,7 @@
     </script>
 </body>
 </html>
+
 
 
 
