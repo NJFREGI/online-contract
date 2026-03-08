@@ -207,13 +207,21 @@
             document.getElementById('total-display').innerText = "￥" + totalWithTax.toLocaleString();
         }
 
-        function copyAll() {
-            document.getElementById('shopName').value = document.getElementById('companyName').value;
-            document.getElementById('shopTel').value = document.getElementById('companyTel').value;
-            document.getElementById('shopAddr1').value = document.getElementById('companyAddr1').value;
-            document.getElementById('shopAddr2').value = document.getElementById('companyAddr2').value;
-            document.getElementById('shopManager').value = document.getElementById('representative').value;
-        }
+       function copyAll() {
+    // 仅复制电话和地址相关字段
+    document.getElementById('shopTel').value = document.getElementById('companyTel').value;
+    document.getElementById('shopAddr1').value = document.getElementById('companyAddr1').value;
+    document.getElementById('shopAddr2').value = document.getElementById('companyAddr2').value;
+    
+    // 如果您有邮编字段，也可以加上这一行
+    if(document.getElementById('companyZip')) {
+        document.getElementById('shopZip').value = document.getElementById('companyZip').value;
+    }
+
+    // 【删除/注释掉以下两行】这样就不会覆盖名称和代表者了
+    // document.getElementById('shopName').value = document.getElementById('companyName').value;
+    // document.getElementById('shopManager').value = document.getElementById('representative').value;
+}
 
         function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
         const getPos = (e) => {
@@ -305,6 +313,7 @@
     </script>
 </body>
 </html>
+
 
 
 
