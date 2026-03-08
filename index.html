@@ -41,9 +41,9 @@
                 <h2 class="section-title">1. ご契約者情報</h2>
                 <div class="field-box"><label>契約会社名<span class="must">必須</span></label><input type="text" id="companyName" required></div>
                 <div class="field-box"><label>会社電話番号<span class="must">必須</span></label><input type="tel" id="companyTel" required></div>
-                <div class="field-box"><label>郵便番号</label><input type="text" class="p-postal-code" maxlength="8" placeholder="1234567"></div>
+                <div class="field-box"><label>郵便番号 <span class="badge-required">必须</span></label><input type="text" id="companyZip" required placeholder="1234567"></div>
                 <div class="field-box"><label>会社住所 (丁目・番地・号)<span class="must">必須</span></label><input type="text" id="companyAddr1" class="p-region p-locality p-street-address" required></div>
-                <div class="field-box"><label>ビル名・部屋番号</label><input type="text" id="companyAddr2"></div>
+                <div class="field-box"><label>ビル名・部屋番号 <span class="badge-required">必须</span></label><input type="text" id="companyAddr2" required>
                 <div class="field-box"><label>代表者氏名<span class="must">必須</span></label><input type="text" id="representative" required></div>
             </section>
 
@@ -52,8 +52,9 @@
                 <button type="button" onclick="copyAll()" class="w-full bg-slate-100 text-[#1e3a8a] py-3 rounded-lg font-bold mb-6 border-2 border-dashed border-[#1e3a8a]">ご契約者情報をコピー</button>
                 <div class="field-box"><label>店舗名<span class="must">必須</span></label><input type="text" id="shopName" required></div>
                 <div class="field-box"><label>店舗電話番号<span class="must">必須</span></label><input type="tel" id="shopTel" required></div>
+                <div class="field-box"><label>郵便番号 <span class="badge-required">必须</span></label><input type="text" id="shopZip" required placeholder="1234567"></div>
                 <div class="field-box"><label>店舗住所 (丁目・番地・号)<span class="must">必須</span></label><input type="text" id="shopAddr1" required></div>
-                <div class="field-box"><label>ビル名・部屋番号</label><input type="text" id="shopAddr2"></div>
+                <div class="field-box"><label>ビル名・部屋番号 <span class="badge-required">必须</span></label><input type="text" id="shopAddr2"></div>
                 <div class="field-box"><label>店舗担当者名<span class="must">必須</span></label><input type="text" id="shopManager" required></div>
                 <div class="field-box"><label>メールアドレス<span class="must">必須</span></label><input type="email" id="email" required></div>
             </section>
@@ -178,8 +179,15 @@
                         <span class="font-bold text-sm text-slate-700">${h.name}</span>
                         <div class="flex items-center gap-4">
                             <span class="text-xs text-slate-400">￥${Number(h.price).toLocaleString()}</span>
-                            <input type="number" value="0" min="0" onchange="updatePlans()" id="hw-${i}" data-price="${h.price}" 
-                                   class="w-16 h-10 text-center border-2 border-slate-300 rounded-lg font-bold">
+                            <input type="number" 
+       value="0" 
+       min="0" 
+       onchange="updatePlans()" 
+       onfocus="if(this.value==='0')this.value=''" 
+       onblur="if(this.value==='')this.value='0'"
+       id="hw-${i}" 
+       data-price="${h.price}"
+       class="w-16 h-10 text-center border-2 border-slate-300 rounded-lg font-bold">
                         </div>
                     </div>`;
             });
@@ -271,22 +279,25 @@
 
     // 3. 构建提交给后台的完整数据包
     const payload = {
-        companyName: document.getElementById('companyName').value,
-        companyTel: document.getElementById('companyTel').value,
-        companyZip: document.querySelector('.p-postal-code').value,
-        companyAddr1: document.getElementById('companyAddr1').value,
-        companyAddr2: document.getElementById('companyAddr2').value,
-        representative: document.getElementById('representative').value,
-        shopName: document.getElementById('shopName').value,
-        shopTel: document.getElementById('shopTel').value,
-        shopAddr1: document.getElementById('shopAddr1').value,
-        shopAddr2: document.getElementById('shopAddr2').value,
-        shopManager: document.getElementById('shopManager').value,
-        email: document.getElementById('email').value,
-        items: items,
-        total: document.getElementById('total-display').innerText,
-        signature: canvas.toDataURL()
-    };
+    companyName: document.getElementById('companyName').value,
+    companyTel: document.getElementById('companyTel').value,
+    companyZip: document.getElementById('companyZip').value, // 修改这一行
+    companyAddr1: document.getElementById('companyAddr1').value,
+    companyAddr2: document.getElementById('companyAddr2').value,
+    representative: document.getElementById('representative').value,
+    
+    shopName: document.getElementById('shopName').value,
+    shopTel: document.getElementById('shopTel').value,
+    shopZip: document.getElementById('shopZip').value, // 确保 ID 已改为 shopZip
+    shopAddr1: document.getElementById('shopAddr1').value,
+    shopAddr2: document.getElementById('shopAddr2').value,
+    shopManager: document.getElementById('shopManager').value,
+    
+    email: document.getElementById('email').value,
+    items: items,
+    total: document.getElementById('total-display').innerText,
+    signature: canvas.toDataURL()
+};
 
     // 4. 执行异步提交
     try {
@@ -313,6 +324,7 @@
     </script>
 </body>
 </html>
+
 
 
 
