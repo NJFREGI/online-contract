@@ -7,139 +7,212 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
     <style>
-        body { font-size: 16px; background-color: #f1f5f9; -webkit-text-size-adjust: 100%; color: #334155; }
-        .field-box { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-bottom: 18px; }
-        label { font-weight: 700; color: #1e293b; font-size: 17px; }
-        input { width: 100% !important; font-size: 18px !important; padding: 12px !important; border: 2px solid #cbd5e1 !important; border-radius: 8px !important; box-sizing: border-box; }
-        .terms-viewer { height: 180px; overflow-y: scroll; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 13px; line-height: 1.6; }
-        .signature-container { border: 3px dashed #1e3a8a; background: #ffffff; border-radius: 12px; touch-action: none; position: relative; }
-        .section-title { font-size: 20px; font-weight: 800; border-left: 6px solid #1e3a8a; padding-left: 10px; color: #1e3a8a; margin-bottom: 15px; margin-top: 25px; }
+        body { font-size: 16px; background-color: #f8fafc; color: #334155; -webkit-text-size-adjust: 100%; }
+        .field-box { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-bottom: 15px; }
+        label { font-weight: 700; color: #1e293b; }
+        input[type="text"], input[type="tel"], input[type="email"], input[type="number"] { 
+            width: 100% !important; font-size: 17px !important; padding: 12px !important; 
+            border: 2px solid #cbd5e1 !important; border-radius: 8px !important; 
+        }
+        .section-title { font-size: 20px; font-weight: 800; border-left: 6px solid #1e3a8a; padding-left: 10px; color: #1e3a8a; margin: 35px 0 20px; }
+        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: white; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; transition: all 0.2s; }
+        .price-item.selected { border-color: #1e3a8a; background-color: #eff6ff; }
         .must { background: #ef4444; color: white; padding: 2px 6px; font-size: 11px; border-radius: 4px; margin-left: 6px; }
-        .price-card { background: #1e293b; color: #fbbf24; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .terms-box { height: 250px; overflow-y: scroll; background: #f1f5f9; padding: 15px; border-radius: 10px; font-size: 13px; line-height: 1.7; border: 1px solid #e2e8f0; }
+        #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
     </style>
 </head>
 <body class="bg-slate-100">
-    <div class="max-w-xl mx-auto bg-white min-h-screen shadow-2xl">
+    <div id="loading-overlay">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1e3a8a]"></div>
+        <p class="mt-4 font-bold text-[#1e3a8a]">最新の料金情報を取得中...</p>
+    </div>
+
+    <div class="max-w-xl mx-auto bg-white min-h-screen shadow-2xl pb-20">
         <header class="bg-[#1e3a8a] text-white p-8 text-center">
             <h1 class="text-xl font-bold tracking-widest">NJF REGI サービス利用申込</h1>
             <p class="text-sm opacity-90 mt-2 font-medium">新日本富士アシスト株式会社</p>
         </header>
 
-        <form id="contractForm" class="p-5 h-adr">
+        <form id="contractForm" class="p-6 h-adr">
             <span class="p-country-name" style="display:none;">Japan</span>
 
             <section>
-                <h2 class="section-title">1. 契約者情報</h2>
-                <div class="field-box">
-                    <label>契約会社名<span class="must">必須</span></label>
-                    <input type="text" id="companyName" required>
-                </div>
-                <div class="field-box">
-                    <label>郵便番号</label>
-                    <input type="text" class="p-postal-code" maxlength="8" placeholder="1234567">
-                </div>
-                <div class="field-box">
-                    <label>会社住所<span class="must">必須</span></label>
-                    <input type="text" id="companyAddress" class="p-region p-locality p-street-address" required>
-                </div>
-                <div class="field-box">
-                    <label>代表者氏名<span class="must">必須</span></label>
-                    <input type="text" id="representative" required>
-                </div>
+                <h2 class="section-title">1. ご契約者情報</h2>
+                <div class="field-box"><label>契約会社名<span class="must">必須</span></label><input type="text" id="companyName" required></div>
+                <div class="field-box"><label>会社電話番号<span class="must">必須</span></label><input type="tel" id="companyTel" required></div>
+                <div class="field-box"><label>郵便番号</label><input type="text" class="p-postal-code" maxlength="8" placeholder="1234567"></div>
+                <div class="field-box"><label>会社住所 (丁目・番地・号)<span class="must">必須</span></label><input type="text" id="companyAddr1" class="p-region p-locality p-street-address" required></div>
+                <div class="field-box"><label>ビル名・部屋番号</label><input type="text" id="companyAddr2"></div>
+                <div class="field-box"><label>代表者氏名<span class="must">必須</span></label><input type="text" id="representative" required></div>
             </section>
 
-            <section class="pt-4 mt-6 border-t border-slate-100">
-                <h2 class="section-title">2. お申込商品・金額</h2>
-                <div id="product-list" class="space-y-4 mb-6">
-                    </div>
-                
-                <div class="price-card">
-                    <p class="text-sm font-bold opacity-80 mb-1">初期費用 合計 (税込)</p>
-                    <p id="total-display" class="text-4xl font-black">￥0</p>
-                </div>
+            <section class="mt-10 pt-6 border-t border-slate-100">
+                <h2 class="section-title">2. 設置先情報</h2>
+                <button type="button" onclick="copyAll()" class="w-full bg-slate-100 text-[#1e3a8a] py-3 rounded-lg font-bold mb-6 border-2 border-dashed border-[#1e3a8a]">ご契約者情報をコピー</button>
+                <div class="field-box"><label>店舗名<span class="must">必須</span></label><input type="text" id="shopName" required></div>
+                <div class="field-box"><label>店舗電話番号<span class="must">必須</span></label><input type="tel" id="shopTel" required></div>
+                <div class="field-box"><label>店舗住所 (丁目・番地・号)<span class="must">必須</span></label><input type="text" id="shopAddr1" required></div>
+                <div class="field-box"><label>ビル名・部屋番号</label><input type="text" id="shopAddr2"></div>
+                <div class="field-box"><label>店舗担当者名<span class="must">必須</span></label><input type="text" id="shopManager" required></div>
+                <div class="field-box"><label>メールアドレス<span class="must">必須</span></label><input type="email" id="email" required></div>
             </section>
 
-            <section class="pt-4 mt-6 border-t border-slate-100">
-                <h2 class="section-title">3. 利用規約の確認</h2>
-                <div class="terms-viewer mb-4">
-                    <p class="font-bold">【確認項目】</p>
-                    <p>・契約期間は1年（自動更新）、最低利用24ヶ月。</p>
-                    <p>・故障時の修理/再購入は実費負担。</p>
-                    <p>・データ保存は24ヶ月、以降は要バックアップ。</p>
-                    <p>・1ヶ月前の書面による解約申請が必要。</p>
-                    <br>
-                    <p class="font-bold">【個人情報の取り扱い】</p>
-                    <p>法令に基づき、レジ業務・サービス改善等の目的で適切に管理します。</p>
-                    <br>
-                    <p class="font-bold">【業務データの保護】</p>
-                    <p>売上データ等は店舗に帰属し、当社は機密を保持します。</p>
-                </div>
+            <section class="mt-10 pt-6 border-t border-slate-100">
+                <h2 class="section-title">3. 初期費用（機材・サービス料）</h2>
                 
-                <div class="space-y-3">
-                    <label class="flex items-center gap-3 p-4 border rounded-xl bg-white cursor-pointer active:bg-blue-50">
-                        <input type="checkbox" required class="w-6 h-6 accent-[#1e3a8a]">
-                        <span class="text-sm font-bold">上記すべての規約に同意する</span>
+                <label class="block mb-3 font-bold text-slate-700">基本サービス料<span class="must">必須</span></label>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <label class="price-item cursor-pointer flex-col items-start gap-1" id="baseMonthlyLabel">
+                        <input type="radio" name="basePlan" value="monthly" checked onchange="updatePlans()">
+                        <span class="font-bold">月払い</span>
+                        <span class="text-blue-700 text-sm font-black">￥8,000</span>
+                    </label>
+                    <label class="price-item cursor-pointer flex-col items-start gap-1" id="baseYearlyLabel">
+                        <input type="radio" name="basePlan" value="yearly" onchange="updatePlans()">
+                        <span class="font-bold">年払い</span>
+                        <span class="text-blue-700 text-sm font-black">￥80,000</span>
                     </label>
                 </div>
-            </section>
 
-            <section class="pt-4 mt-6 border-t border-slate-100">
-                <h2 class="section-title">4. ご署名</h2>
-                <div class="signature-container">
-                    <canvas id="signaturePad" class="w-full" height="280"></canvas>
-                    <button type="button" onclick="clearSig()" class="absolute top-2 right-2 bg-slate-100 px-3 py-1 rounded border text-xs">クリア</button>
+                <label class="block mb-3 font-bold text-slate-700">オプション</label>
+                <label class="price-item cursor-pointer" id="scanOptionLabel">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="scanOption" onchange="updatePlans()" class="w-6 h-6 accent-[#1e3a8a]">
+                        <div>
+                            <span class="font-bold block">扫码服务 (モバイルオーダー)</span>
+                            <span id="scanPriceText" class="text-sm text-slate-500">￥4,000/月</span>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="block mt-8 mb-3 font-bold text-slate-700">機材・工事代金</label>
+                <div id="product-list" class="space-y-3 mb-8">
+                    </div>
+
+                <div class="bg-[#1e293b] p-6 rounded-2xl text-center shadow-lg">
+                    <p class="text-xs text-slate-400 font-bold mb-1 tracking-widest">お支払合計 (10%税込)</p>
+                    <p id="total-display" class="text-4xl font-black text-[#fbbf24]">￥0</p>
                 </div>
-                <p class="text-[10px] text-slate-400 mt-4 text-center">本項目の解釈に疑義がある場合には、お客様と当社は信義誠実に協議のうえ定めるものとする。</p>
             </section>
 
-            <button type="submit" id="submitBtn" class="w-full bg-[#1e3a8a] text-white font-bold py-4 rounded-xl text-lg mt-8 shadow-lg">お申込を確定する</button>
+            <section class="mt-10 pt-6 border-t border-slate-100">
+                <h2 class="section-title">4. 利用規約の確認</h2>
+                <div class="terms-box mb-6 text-slate-600">
+                    <p class="font-bold text-slate-800 mb-2 underline">【確認事項】</p>
+                    <p>□ 本サービスの契約期間は1年間です。契約期間満了後は、1年毎の自動更新となります。</p>
+                    <p>□ ご利用開始日は、本サービス・オプションサービス専用機器の設置（設定含む）が完了した日とさせていただきます。</p>
+                    <p>□ 利用開始日より24ヶ月（最低利用期間）経過前に利用契約を中途解約する場合は、最低利用期間分の利用料金をお支払いいただきます。</p>
+                    <p>□ 当社推奨機器以外をご利用される場合は当社は、一切の動作保証を行いません。</p>
+                    <p>□ お客様のデータ保存期間は最大24ヶ月間です。25ヶ月目以降データは消去されますので、バックアップをお願いします。</p>
+                    <p>□ 初期登録に必要な帳票は、設置日の10営業日前までに「基本情報」、7営業日前までに「メニューデータ」をご提出ください。</p>
+                    <p>□ 解約される場合は、１ヶ月前の書面による申請が必要です。</p>
+
+                    <p class="font-bold text-slate-800 mt-6 mb-2 underline">【個人情報の取り扱いについて】</p>
+                    <p>□ 取得した個人情報は、レジ業務、注文処理、問い合わせ対応、法令に基づく対応の目的に限り利用します。</p>
+                    <p>□ 法令に基づき開示を求められた場合を除き、個人情報を第三者に提供・开示することはありません。</p>
+
+                    <p class="font-bold text-slate-800 mt-6 mb-2 underline">【業務データの取扱いおよび保護】</p>
+                    <p>□ 蓄積される売上情報等の業務データは、利用店舗に帰属するものとします。</p>
+                    <p>□ 当社は、業務データの機密性を保持し、正当な理由なく第三者に開示、漏洩、転用しないものとします。</p>
+                    <p class="mt-6 italic text-slate-500 text-[11px]">※本項目の解釈に疑義がある場合には、お客様と当社は信義誠実に協議のうえ定めるものとする。</p>
+                </div>
+                
+                <label class="flex items-center gap-4 p-5 border-2 border-[#1e3a8a] rounded-xl bg-blue-50/50 cursor-pointer mb-8">
+                    <input type="checkbox" required class="w-6 h-6 accent-[#1e3a8a]">
+                    <span class="font-bold text-slate-800 text-sm">規約内容を全て理解し、同意します</span>
+                </label>
+
+                <label class="font-bold text-slate-700 block mb-2">代表者署名</label>
+                <div class="border-2 border-dashed border-slate-300 rounded-xl bg-white relative">
+                    <canvas id="sigPad" class="w-full h-64 touch-none"></canvas>
+                    <button type="button" onclick="clearSig()" class="absolute top-2 right-2 bg-slate-100 px-3 py-1 rounded text-xs border">クリア</button>
+                </div>
+            </section>
+
+            <button type="submit" id="submitBtn" class="w-full bg-[#1e3a8a] text-white font-bold py-5 rounded-2xl text-xl mt-12 shadow-xl active:scale-95 transition-all">お申込を確定する</button>
         </form>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwIP-XgdD0fqd4Zhe3tsN7iAWXoIuiEs_7jVBEH6ZXGmESG_4qxNde8k0hrgwAKscz56w/exec"; 
-        const canvas = document.getElementById('signaturePad');
+        // ======= 关键：填写您的 GAS WebApp 链接 =======
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwIP-XgdD0fqd4Zhe3tsN7iAWXoIuiEs_7jVBEH6ZXGmESG_4qxNde8k0hrgwAKscz56w/exec"; 
+        // ===========================================
+
+        let hardwareData = [];
+        const canvas = document.getElementById('sigPad');
         const ctx = canvas.getContext('2d');
         let drawing = false;
 
-        // 模拟商品数据，您可以在此处修改
-        const products = [
-            { name: "NJF智能收银主机", price: 80000 },
-            { name: "厨房打印机", price: 25000 },
-            { name: "QR在线注文服务", price: 4000 }
-        ];
-
-        window.onload = () => {
+        window.onload = async () => {
             canvas.width = canvas.offsetWidth;
-            ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
-            renderProducts();
+            canvas.height = 250;
+            ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+            await loadProducts();
         };
 
-        function renderProducts() {
+        // 动态加载谷歌表格商品数据
+        async function loadProducts() {
+            try {
+                const response = await fetch(GAS_URL + "?action=getProducts");
+                const data = await response.json();
+                
+                // 过滤掉利用料，只留下机材类商品
+                hardwareData = data.filter(item => !item.name.includes("利用料") && !item.name.includes("QR注文"));
+                
+                renderHardwares();
+                updatePlans();
+                document.getElementById('loading-overlay').style.display = 'none';
+            } catch (e) {
+                console.error("加载失败", e);
+                alert("商品情報の取得に失敗しました。ページを再読み込みしてください。");
+            }
+        }
+
+        function renderHardwares() {
             const list = document.getElementById('product-list');
-            products.forEach((p, i) => {
+            list.innerHTML = "";
+            hardwareData.forEach((h, i) => {
                 list.innerHTML += `
-                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-200">
-                        <span class="font-bold text-sm">${p.name}</span>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs text-slate-500">￥${p.price.toLocaleString()}</span>
-                            <input type="number" value="0" min="0" onchange="calcTotal()" id="qty-${i}" data-price="${p.price}" 
-                                   class="w-16 h-10 text-center border-2 border-slate-300 rounded-md font-bold">
+                    <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="font-bold text-sm text-slate-700">${h.name}</span>
+                        <div class="flex items-center gap-4">
+                            <span class="text-xs text-slate-400">￥${Number(h.price).toLocaleString()}</span>
+                            <input type="number" value="0" min="0" onchange="updatePlans()" id="hw-${i}" data-price="${h.price}" 
+                                   class="w-16 h-10 text-center border-2 border-slate-300 rounded-lg font-bold">
                         </div>
                     </div>`;
             });
         }
 
-        function calcTotal() {
-            let total = 0;
-            products.forEach((_, i) => {
-                const qty = document.getElementById(`qty-${i}`).value;
-                const price = document.getElementById(`qty-${i}`).dataset.price;
-                total += qty * price;
+        function updatePlans() {
+            const isYearly = document.querySelector('input[name="basePlan"]:checked').value === 'yearly';
+            const scanChecked = document.getElementById('scanOption').checked;
+            
+            document.getElementById('baseMonthlyLabel').classList.toggle('selected', !isYearly);
+            document.getElementById('baseYearlyLabel').classList.toggle('selected', isYearly);
+            document.getElementById('scanOptionLabel').classList.toggle('selected', scanChecked);
+            document.getElementById('scanPriceText').innerText = isYearly ? "￥40,000/年" : "￥4,000/月";
+
+            let subTotal = isYearly ? 80000 : 8000;
+            if(scanChecked) subTotal += isYearly ? 40000 : 4000;
+            
+            hardwareData.forEach((_, i) => {
+                const qty = document.getElementById(`hw-${i}`).value;
+                const price = document.getElementById(`hw-${i}`).dataset.price;
+                subTotal += Number(qty) * Number(price);
             });
-            // 加上 10% 税费
-            const totalWithTax = Math.floor(total * 1.1);
+
+            const totalWithTax = Math.floor(subTotal * 1.1);
             document.getElementById('total-display').innerText = "￥" + totalWithTax.toLocaleString();
+        }
+
+        function copyAll() {
+            document.getElementById('shopName').value = document.getElementById('companyName').value;
+            document.getElementById('shopTel').value = document.getElementById('companyTel').value;
+            document.getElementById('shopAddr1').value = document.getElementById('companyAddr1').value;
+            document.getElementById('shopAddr2').value = document.getElementById('companyAddr2').value;
+            document.getElementById('shopManager').value = document.getElementById('representative').value;
         }
 
         function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
@@ -153,11 +226,10 @@
         canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
         canvas.addEventListener('touchend', () => drawing = false);
 
-        document.getElementById('contractForm').onsubmit = async (e) => {
+        document.getElementById('contractForm').onsubmit = (e) => {
             e.preventDefault();
-            const isBlank = canvas.toDataURL() === canvas.cloneNode().toDataURL();
-            if(isBlank) { alert("署名をお願いします。"); return; }
-            alert("送信中...");
+            if(canvas.toDataURL() === canvas.cloneNode().toDataURL()) { alert("代表者署名をお願いします。"); return; }
+            alert("お申込を送信しています...");
         };
     </script>
 </body>
