@@ -2,138 +2,238 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>サービス利用申込 | NJF REGI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NJF REGI サービス利用申込書</title>
+    <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
     <style>
-        /* 强制手机端大字体和满屏布局 */
-        body { font-size: 20px; -webkit-text-size-adjust: 100%; background-color: #f1f5f9; }
-        .field-group { display: flex; flex-direction: column; width: 100%; margin-bottom: 25px; }
-        label { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 10px; }
-        input { 
-            width: 100% !important; height: 70px !important; font-size: 22px !important; 
-            padding: 0 20px !important; border: 3px solid #64748b !important; 
-            border-radius: 15px !important; box-sizing: border-box !important;
-        }
-        .sig-container { border: 4px dashed #1e3a8a; background: #fff; border-radius: 20px; touch-action: none; }
-        .section-header { font-size: 26px; font-weight: 900; color: #1e3a8a; border-left: 12px solid #1e3a8a; padding-left: 15px; margin: 40px 0 25px 0; }
-        .must { background: #ef4444; color: white; padding: 2px 10px; font-size: 14px; border-radius: 6px; margin-left: 10px; }
+        body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background-color: #f4f7f9; color: #333; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #000; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 30px; font-size: 24px; }
+        h2 { background: #eee; padding: 10px; font-size: 18px; border-left: 5px solid #000; margin-top: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="email"], input[type="tel"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .address-group { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .address-group input { flex: 1; }
+        .zip-input { width: 120px !important; }
+        
+        /* 设备选择样式 */
+        .item-list { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .item-list th, .item-list td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .item-list th { background: #fafafa; }
+        .price-col { text-align: right; width: 120px; }
+        
+        /* 签名板样式 */
+        #signature-pad { border: 2px dashed #ccc; border-radius: 4px; cursor: crosshair; background-color: #fafafa; width: 100%; height: 200px; }
+        .clear-btn { margin-top: 5px; background: #666; color: #fff; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; }
+
+        .total-box { text-align: right; font-size: 20px; font-weight: bold; margin-top: 20px; color: #d9534f; }
+        .submit-btn { width: 100%; padding: 15px; background: #000; color: #fff; font-size: 18px; border: none; border-radius: 4px; cursor: pointer; margin-top: 30px; transition: 0.3s; }
+        .submit-btn:hover { background: #333; }
+        .terms { margin-top: 20px; padding: 10px; border: 1px solid #eee; background: #fffcf0; }
     </style>
 </head>
-<body class="p-0 m-0">
-    <div class="w-full bg-white min-h-screen">
-        <header class="bg-[#1e3a8a] text-white p-12 text-center">
-            <h1 class="text-3xl font-bold tracking-widest">NJF REGI サービス利用申込</h1>
-            <p class="text-xl mt-4 font-bold">新日本富士アシスト株式会社</p>
-        </header>
+<body>
 
-        <form id="contractForm" class="p-6 pb-20">
-            <h2 class="section-header">1. 契約者情報</h2>
-            <div class="field-group">
-                <label>契約会社名<span class="must">必須</span></label>
-                <input type="text" id="companyName" required placeholder="株式会社〇〇">
-            </div>
-            <div class="field-group">
-                <label>代表者氏名<span class="must">必須</span></label>
-                <input type="text" id="representative" required>
-            </div>
-            <div class="field-group">
-                <label>会社住所<span class="must">必須</span></label>
-                <input type="text" id="companyAddress" required>
-            </div>
+<div class="container">
+    <h1>NJF REGI サービス利用申込</h1>
 
-            <h2 class="section-header">2. 設置先情報 (店舗)</h2>
-            <button type="button" onclick="copyAddr()" class="w-full bg-blue-600 text-white py-6 rounded-2xl font-bold mb-10 text-2xl shadow-lg">住所のみ契約者と同じ</button>
-            <div class="field-group">
-                <label>店舗名<span class="must">必須</span></label>
-                <input type="text" id="shopName" required>
+    <form class="h-adr" id="contractForm">
+        <span class="p-country-name" style="display:none;">Japan</span>
+
+        <h2>1. ご契約者様情報</h2>
+        <div class="form-group">
+            <label>会社名・屋号 <span style="color:red;">*</span></label>
+            <input type="text" id="companyName" required placeholder="株式会社NJF">
+        </div>
+        <div class="form-group">
+            <label>代表者名 <span style="color:red;">*</span></label>
+            <input type="text" id="representative" required placeholder="田中 太郎">
+        </div>
+        <div class="form-group">
+            <label>所在地 <span style="color:red;">*</span></label>
+            <div class="address-group">
+                〒 <input type="text" id="companyZip" class="p-postal-code zip-input" size="8" maxlength="8" placeholder="123-4567">
             </div>
-            <div class="field-group">
-                <label>店舗担当者名<span class="must">必須</span></label>
-                <input type="text" id="shopManager" required>
+            <input type="text" id="companyAddr1" class="p-region p-locality p-street-address p-extended-address" placeholder="住所が自動入力されます" readonly>
+            <input type="text" id="companyAddr2" style="margin-top:5px;" placeholder="ビル名・部屋番号など">
+        </div>
+        <div class="form-group">
+            <label>電話番号 <span style="color:red;">*</span></label>
+            <input type="tel" id="tel" required placeholder="03-1234-5678">
+        </div>
+        <div class="form-group">
+            <label>メールアドレス (納品・連絡用) <span style="color:red;">*</span></label>
+            <input type="email" id="customerEmail" required placeholder="example@mail.com">
+        </div>
+
+        <h2>2. 店舗情報</h2>
+        <div class="form-group">
+            <label>店舗名</label>
+            <input type="text" id="shopName" placeholder="NJFレストラン 渋谷店">
+        </div>
+        <div class="form-group">
+            <label>店舗担当者名</label>
+            <input type="text" id="shopManager" placeholder="佐藤 二郎">
+        </div>
+        <div class="form-group">
+            <label>設置先住所</label>
+            <div class="address-group">
+                〒 <input type="text" id="shopZip" class="p-postal-code zip-input" size="8" maxlength="8" placeholder="123-4567">
             </div>
-            <div class="field-group">
-                <label>店舗住所<span class="must">必須</span></label>
-                <input type="text" id="shopAddress" required>
-            </div>
-            <div class="field-group">
-                <label>連絡先メール<span class="must">必須</span></label>
-                <input type="email" id="email" required placeholder="example@mail.com">
-            </div>
+            <input type="text" id="shopAddr1" class="p-region p-locality p-street-address p-extended-address" placeholder="住所が自動入力されます" readonly>
+            <input type="text" id="shopAddr2" style="margin-top:5px;" placeholder="号室・階数">
+        </div>
 
-            <h2 class="section-header">3. ご署名</h2>
-            <div class="sig-container">
-                <canvas id="signaturePad" class="w-full" height="350"></canvas>
-            </div>
-            <button type="button" onclick="clearSig()" class="w-full mt-4 bg-slate-200 py-4 rounded-xl font-bold text-xl mb-10 text-slate-600">書き直す (クリア)</button>
+        <h2>3. お申込み内容 (初期費用・オプション)</h2>
+        <table class="item-list">
+            <thead>
+                <tr>
+                    <th>選択</th>
+                    <th>項目名</th>
+                    <th class="price-col">単価 (税抜)</th>
+                </tr>
+            </thead>
+            <tbody id="itemTable">
+                <tr>
+                    <td><input type="checkbox" class="item-check" data-name="NJF REGI 基本セット" data-price="50000" checked onclick="calculateTotal()"></td>
+                    <td>NJF REGI 基本セット (導入支援込)</td>
+                    <td class="price-col">50,000円</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="item-check" data-name="キャッシュドロア" data-price="15000" onclick="calculateTotal()"></td>
+                    <td>キャッシュドロア</td>
+                    <td class="price-col">15,000円</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="item-check" data-name="レシートプリンター" data-price="35000" onclick="calculateTotal()"></td>
+                    <td>レシートプリンター</td>
+                    <td class="price-col">35,000円</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="total-box">
+            合計金額：<span id="total-display">50,000</span> 円
+        </div>
 
-            <h2 class="section-header">4. 確認事項</h2>
-            <label class="flex items-center gap-6 p-8 border-4 border-slate-300 rounded-3xl bg-white mb-10 active:bg-blue-50">
-                <input type="checkbox" id="agree" required style="width: 45px; height: 45px;">
-                <span class="text-2xl font-black">重要事項に同意する</span>
-            </label>
+        <h2>4. 確認事項</h2>
+        <div class="terms">
+            <p>1. 本サービスはNJF株式会社の利用規約に基づき提供されます。</p>
+            <p>2. 導入後のサポートは平日10:00-18:00となります。</p>
+            <input type="checkbox" id="terms-check" required> <label style="display:inline;" for="terms-check">サービス利用規約に同意します</label>
+        </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-[#1e3a8a] text-white font-black py-10 rounded-3xl text-4xl shadow-2xl active:scale-95 transition-all">お申込を確定する</button>
-        </form>
-    </div>
+        <h2>5. ご署名</h2>
+        <p style="font-size:12px; color:#666;">※枠内にマウスまたは指で署名してください。</p>
+        <canvas id="signature-pad"></canvas>
+        <button type="button" class="clear-btn" onclick="clearSignature()">書き直す</button>
 
-    <script>
-        // ======= 在这里填入您的 GAS 部署链接 =======
-        const API_URL = "https://script.google.com/macros/s/AKfycbzc6ckgqs5zIBoAkrp5SOT4KBnWKkRC_RMflZsG72-iE9fB_5KlKAA7xyyM9rTRiAULGw/exec"; 
-        // =========================================
+        <button type="button" class="submit-btn" onclick="submitToGas()">内容を確認して送信する</button>
+    </form>
+</div>
 
-        const canvas = document.getElementById('signaturePad');
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
+<script>
+    // 签名逻辑
+    const canvas = document.getElementById('signature-pad');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
 
-        window.onload = () => {
-            canvas.width = canvas.offsetWidth;
-            ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+    // 适应窗口大小
+    function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        ctx.scale(ratio, ratio);
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // 签名事件监听
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX || e.touches[0].clientX) - rect.left,
+            y: (e.clientY || e.touches[0].clientY) - rect.top
+        };
+    }
+    canvas.addEventListener('mousedown', (e) => { drawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); });
+    canvas.addEventListener('mousemove', (e) => { if(!drawing) return; const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); });
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); drawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if(!drawing) return; const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); });
+    
+    function clearSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    // 计算总价
+    function calculateTotal() {
+        let total = 0;
+        document.querySelectorAll('.item-check:checked').forEach(cb => {
+            total += parseInt(cb.dataset.price);
+        });
+        document.getElementById('total-display').innerText = total.toLocaleString();
+    }
+
+    // 提交到 GAS
+    function submitToGas() {
+        const terms = document.getElementById('terms-check').checked;
+        if(!terms) { alert("利用規約への同意が必要です。"); return; }
+        
+        const companyName = document.getElementById('companyName').value;
+        if(!companyName) { alert("会社名を入力してください。"); return; }
+
+        // 收集设备数据
+        const items = [];
+        document.querySelectorAll('.item-check:checked').forEach(cb => {
+            items.push({ name: cb.dataset.name, count: 1, subtotal: cb.dataset.price });
+        });
+
+        const payload = {
+            companyName: companyName,
+            representative: document.getElementById('representative').value,
+            companyZip: document.getElementById('companyZip').value,
+            companyAddr1: document.getElementById('companyAddr1').value,
+            companyAddr2: document.getElementById('companyAddr2').value,
+            tel: document.getElementById('tel').value,
+            customerEmail: document.getElementById('customerEmail').value,
+            shopName: document.getElementById('shopName').value,
+            shopManager: document.getElementById('shopManager').value,
+            shopZip: document.getElementById('shopZip').value,
+            shopAddr1: document.getElementById('shopAddr1').value,
+            shopAddr2: document.getElementById('shopAddr2').value,
+            items: items,
+            total: document.getElementById('total-display').innerText,
+            confirmed: terms,
+            signature: canvas.toDataURL() // 签名Base64
         };
 
-        function copyAddr() { document.getElementById('shopAddress').value = document.getElementById('companyAddress').value; }
-        function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        const btn = document.querySelector('.submit-btn');
+        btn.innerText = "送信中...";
+        btn.disabled = true;
 
-        const getPos = (e) => {
-            const r = canvas.getBoundingClientRect();
-            const tx = e.touches ? e.touches[0].clientX : e.clientX;
-            const ty = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: tx - r.left, y: ty - r.top };
-        };
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
-        canvas.addEventListener('touchend', () => drawing = false);
-
-        document.getElementById('contractForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const isBlank = canvas.toDataURL() === canvas.cloneNode().toDataURL();
-            if(isBlank) { alert("署名をお願いします。"); return; }
-            
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true; btn.innerText = "送信中...";
-
-            const payload = {
-                companyName: document.getElementById('companyName').value,
-                companyAddress: document.getElementById('companyAddress').value,
-                representative: document.getElementById('representative').value,
-                shopName: document.getElementById('shopName').value,
-                shopManager: document.getElementById('shopManager').value,
-                shopAddress: document.getElementById('shopAddress').value,
-                email: document.getElementById('email').value,
-                signature: canvas.toDataURL('image/png')
-            };
-
-            try {
-                const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
-                const resData = await res.json();
-                if(resData.status === "success") { alert("お申込が完了しました！邮件をご確認ください。"); location.reload(); }
-                else { throw new Error(resData.msg); }
-            } catch (err) {
-                alert("エラー: " + err.message);
-                btn.disabled = false; btn.innerText = "お申込を確定する";
+        fetch('https://script.google.com/macros/s/AKfycbzc6ckgqs5zIBoAkrp5SOT4KBnWKkRC_RMflZsG72-iE9fB_5KlKAA7xyyM9rTRiAULGw/exec', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.result === 'success') {
+                alert('申込書が送信されました。ありがとうございます。');
+                location.reload();
+            } else {
+                alert('エラーが発生しました: ' + data.error);
+                btn.disabled = false;
+                btn.innerText = "内容を確認して送信する";
             }
-        };
-    </script>
+        })
+        .catch(err => {
+            console.error(err);
+            alert('通信エラーが発生しました。');
+            btn.disabled = false;
+        });
+    }
+</script>
+
 </body>
 </html>
-
